@@ -64,7 +64,7 @@
     email: '',
     password: '',
   });
-  
+  const router = useRouter()
   const config = useRuntimeConfig();
   const baseURL = config.public.baseURL;
   
@@ -75,6 +75,10 @@
         method: 'POST',
         body: signupForm.value as Signup,
       });
+
+      if (response && response.status === 200) { // Assuming success status code is 200
+        router.push('/')
+      }
 
     } catch (err) {
 

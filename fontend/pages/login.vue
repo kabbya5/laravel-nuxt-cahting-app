@@ -49,20 +49,22 @@ definePageMeta({
 });
 
 import { useAuthStore } from '~/stores/authStore';
+const errors = ref('');
+const apiUrl = getBaseUrl();
+const {setToken, setUser, getUser} = useAuthStore();
+const router = useRouter();
+
 interface loginType{
     email:string,
     password:string,
 }
 
 const loginForm = ref<loginType>({
-    email: ' ',
+    email: getUser() ? getUser()!.email : '',
     password: ' ',
 });
 
-const errors = ref('');
-const apiUrl = getBaseUrl();
-const {setToken, setUserName} = useAuthStore();
-const router = useRouter();
+
 
 const handleLogin = async() =>{
     errors.value = '';
@@ -77,10 +79,14 @@ const handleLogin = async() =>{
         }else{
             const rawValue = response._rawValue;
             const token = rawValue.token; 
+
             
             if(token){
                 setToken(token);
-                setUserName(rawValue.user.name);
+                setUser({
+                    name:rawValue.user.name,
+                    email:rawValue.user.email,
+                });
             }
 
             router.push('/');

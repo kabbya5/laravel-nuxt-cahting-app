@@ -38,27 +38,49 @@ class AuthController extends Controller
 
     }
 
-    public function login(Request $request){
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        $credentials = $request->only('email', 'password');
-        if (auth()->attempt($credentials)) {
-            $user = auth()->user();
-            return response()->json(['user' => $user, 'token' => $user->createToken('authentication')->plainTextToken]);
-        }
-
-        return response()->json(['message' => 'Unauthorized'], 401);
-    }
-
-    public function logout(Request $request)
+    public function login(Request $request)
     {
-        $user = $request->user();
 
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string|min:6', // Ensure password is a string with at least 6 characters
+    ]);
 
-        $user->currentAccessToken()->delete();
+    $credentials = $request->only('email', 'password');
 
-        return response()->json(['message' => 'Logged out successfully'], 200);
+    if (auth()->attempt($credentials)) {
+        $user = auth()->user();
+        if ($user) {
+            $token = $user->createToken('authentication')->plainTextToken;
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ]);
+        }
     }
+
+    // Return an Unauthorized response if authentication fails
+    return response()->json(['message' => 'Unauthorized'], 401);
+}
+
+public function logout(Request $request)
+{
+    $user = $request->user();
+
+    if ($user && $user->currentAccessToken()) {
+        $user->currentAccessToken()->delete();
+        broadcast(new UserSessionChanged("{$user->name} logged out", 'warning'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully'
+        ], 200);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'No authenticated user found'
+    ], 401);
+}
 }

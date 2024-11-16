@@ -21,8 +21,7 @@
   onMounted(() => {
     $echo.channel('notification')
       .listen('UserSessionChanged', (event) => {
-        console.log('Received event:', event);
-        alert('Received notification: ' + event.message);
+          notificationStore.addNotification(event.message, event.type);
       });
   })
 </script>
