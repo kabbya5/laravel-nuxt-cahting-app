@@ -24,4 +24,5 @@
         useCustomFetch(`${config.public.baseURL}/notification`);
         notificationStore.addNotification('This is a notification!', 'success');
     };
+
 </script>

@@ -82,7 +82,6 @@
         notificationStore.addNotification('Logout Faild', 'error');
       }
     } catch(error){
-      clearAuthData();
       notificationStore.addNotification('Logout Faild', 'error');
     }
   }
