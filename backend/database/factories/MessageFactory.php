@@ -19,6 +19,7 @@ class MessageFactory extends Factory
             'group_id' => Group::factory(),
             'content' => $this->faker->sentence(),
             'message_type' => 'text',
+            'is_read'  => $this->faker->boolean,
         ];
     }
 }

@@ -13,8 +13,10 @@ class GroupFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->company(),
-            'created_by' => User::factory(),
+            'name' => $this->faker->words(2, true), // Generate a random group name
+            'group_picture' => $this->faker->imageUrl(200, 200, 'groups', true, 'Group'), // Fake image URL
+            'owner_id' => User::factory(),
         ];
+
     }
 }

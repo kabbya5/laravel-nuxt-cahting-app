@@ -13,7 +13,7 @@ class CreateCallsTable extends Migration
             $table->foreignId('caller_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('group_id')->nullable()->constrained('groups')->onDelete('cascade');
-            $table->enum('call_type', ['audio', 'video']);
+            $table->enum('call_type', ['audio', 'video', 'missed', 'ongoing'])->nullable();
             $table->enum('status', ['ongoing', 'ended', 'missed']);
             $table->timestamp('started_at')->nullable();
             $table->timestamp('ended_at')->nullable();

@@ -14,7 +14,8 @@ class CreateMessagesTable extends Migration
             $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('group_id')->nullable()->constrained('groups')->onDelete('cascade');
             $table->text('content');
-            $table->enum('message_type', ['text', 'image', 'video']);
+            $table->enum('message_type', ['text', 'image', 'video'])->default('text');
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
         });
     }

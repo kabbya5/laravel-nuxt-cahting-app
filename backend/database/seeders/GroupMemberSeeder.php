@@ -9,7 +9,7 @@ class GroupMemberSeeder extends Seeder
 {
     public function run()
     {
-        GroupMember::factory(30)->create(); // Generate 30 group members
+        GroupMember::factory(30)->create();
     }
 }
 
