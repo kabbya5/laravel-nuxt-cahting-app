@@ -1,7 +1,15 @@
 <template>
-    <div class="shadow-xl dark:bg-black bg-white">
+    <div class="shadow-md dark:bg-black bg-white">
       <div class="container mx-auto px-2 py-3">
         <div class="flex justify-between items-center">
+          <div class="w-1/3 flex items-center">
+            <NuxtLink to="/" class="text-dark dark:text-white">
+              <FontAwesomeIcon class="text-black dark:text-white" :icon="['fab','facebook']" size="2xl" />
+            </NuxtLink>
+            <div class="form-group ralative mx-3">
+              <input type="search heare" >
+            </div>
+          </div>
           <NuxtLink to="/" class="text-3xl font-lg text-dark dark:text-white"> Home </NuxtLink>
           <div class="flex w-full justify-center">
             <div class="flex justify-between items-center w-1/2">

@@ -2,7 +2,10 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  css: ['~/assets/scss/_main.scss'],
+  css: [
+    '~/assets/scss/_main.scss',
+    '@fortawesome/fontawesome-svg-core/styles.css',
+  ],
 
   runtimeConfig: {
     public: {
