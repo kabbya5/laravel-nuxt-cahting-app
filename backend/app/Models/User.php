@@ -75,4 +75,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Call::class, 'caller_id');
     }
+
+    public function pages() {
+        return $this->hasMany(Page::class);
+    }
+
+    public function posts() {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes() {
+        return $this->hasMany(Like::class);
+    }
 }

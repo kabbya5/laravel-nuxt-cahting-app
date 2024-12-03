@@ -14,6 +14,10 @@ class DatabaseSeeder extends Seeder
             MessageSeeder::class,
             GroupMemberSeeder::class,
             CallSeeder::class,
+            PageSeeder::class,
+            PostSeeder::class,
+            CommentSeeder::class,
+            LikeSeeder::class,
         ]);
     }
 }
