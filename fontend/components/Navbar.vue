@@ -7,7 +7,8 @@
               <FontAwesomeIcon class="text-black dark:text-white" :icon="['fab','facebook']" size="2xl" />
             </NuxtLink>
             <div class="form-group ralative mx-3">
-              <input type="search heare" >
+              <input type="text" class="absolut px-2 border border-2 border-slate-300 rounded-md h-8 w-48" 
+                placeholder="Search here..." >
             </div>
           </div>
           <NuxtLink to="/" class="text-3xl font-lg text-dark dark:text-white"> Home </NuxtLink>
