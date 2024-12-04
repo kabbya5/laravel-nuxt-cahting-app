@@ -2,27 +2,51 @@
     <div class="shadow-md dark:bg-black bg-white">
       <div class="container mx-auto px-2 py-3">
         <div class="flex justify-between items-center">
+
           <div class="w-1/3 flex items-center">
             <NuxtLink to="/" class="text-dark dark:text-white">
-              <FontAwesomeIcon class="text-black dark:text-white" :icon="['fab','facebook']" size="2xl" />
+              <FontAwesomeIcon class="text-blue-800 dark:text-white" :icon="['fab','facebook']" size="2xl" />
             </NuxtLink>
             <div class="form-group ralative mx-3">
-              <input type="text" class="absolut px-2 border border-2 border-slate-300 rounded-md h-8 w-48" 
+              <input type="text" class="absolut p-2 border border-2 
+                border-slate-300 rounded-md h-9 w-48 focus:outline-none" 
                 placeholder="Search here..." >
             </div>
           </div>
-          <NuxtLink to="/" class="text-3xl font-lg text-dark dark:text-white"> Home </NuxtLink>
-          <div class="flex w-full justify-center">
-            <div class="flex justify-between items-center w-1/2">
 
-            
-              <NuxtLink 
-                :to="{ name: 'chat' }" 
-                class="text-2xl font-md text-dark dark:text-white"
+          <div class="w-1/3 flex items-center justify-between">
+            <NuxtLink to="/" class="text-dark dark:text-white">
+              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','home']" size="2xl" />
+            </NuxtLink>
+
+            <NuxtLink to="/" class="text-dark dark:text-white">
+              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','play']" size="2xl" />
+            </NuxtLink>
+
+            <NuxtLink to="/" class="text-dark dark:text-white">
+              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','people-group']" size="2xl" />
+            </NuxtLink>
+          </div>
+
+          <div class="w-1/3 flex items-center justify-end">
+            <NuxtLink to="/" class="text-dark dark:text-white">
+              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fab','facebook-messenger']" size="2xl" />
+            </NuxtLink>
+
+            <NuxtLink to="/" class="text-dark dark:text-white">
+              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','bell']" size="2xl" />
+            </NuxtLink>
+
+            <button 
+                @click="darkModeStore.toggleDarkMode" 
+                class="dark-mode-toggle text-black dark:text-white"
               >
-                Chat 
-              </NuxtLink>
+              <FontAwesomeIcon :icon="darkModeStore.isDark ? 'sun' : 'moon'" size="2xl" />
+            </button>
+          </div>
 
+          
+          <!-- <div class="flex w-full justify-center">
               <button 
                 v-if="userName" 
                 @click="handelLogout"  
@@ -39,14 +63,9 @@
                 Login
               </NuxtLink>
             </div>
-          </div>
+          </div> -->
           
-          <button 
-            @click="darkModeStore.toggleDarkMode" 
-            class="dark-mode-toggle text-black dark:text-white"
-          >
-            <FontAwesomeIcon :icon="darkModeStore.isDark ? 'sun' : 'moon'" size="lg" />
-          </button>
+          
         </div>
       </div>
 
