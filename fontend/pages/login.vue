@@ -80,7 +80,6 @@ const handleLogin = async() =>{
             const rawValue = response._rawValue;
             const token = rawValue.token; 
 
-            
             if(token){
                 setToken(token);
                 setUser({

@@ -5,25 +5,59 @@ export const useAuthStore = defineStore('auth', () => {
     const isClient = process.client;
 
     
-    const token = ref<string | null>(isClient ? localStorage.getItem('authToken') : null);
-    const user = ref<any | null>(isClient && localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null);
+    const token = ref<string | null>(null);
+    const user = ref<object | null>(null);
 
+    if (isClient) {
+        const tokenData = localStorage.getItem('authToken');
+        if (tokenData) {
+            const parsedToken = JSON.parse(tokenData);
+            if (parsedToken.expiresAt > Date.now()) {
+                token.value = parsedToken.value;
+            } else {
+                localStorage.removeItem('authToken');
+            }
+        }
+
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            user.value = JSON.parse(storedUser);
+        }
+    }
 
     const setToken = (newToken: string): void => {
         if (isClient) {
-            const expirationTime = Date.now() + 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
+            const expirationTime = Date.now() + 2 * 24 * 60 * 60 * 1000; // 2 days
             const tokenData = {
                 value: newToken,
-                expiresAt: expirationTime
+                expiresAt: expirationTime,
             };
-            
-            localStorage.setItem('authToken', JSON.stringify(tokenData));  // Save token with expiration time
+
+            localStorage.setItem('authToken', JSON.stringify(tokenData));
+            token.value = newToken; // Sync with reactive state
         }
     };
 
-    const setUser = (user: object): void => {
+    const getToken = (): string | null => {
         if (isClient) {
-            localStorage.setItem('user', JSON.stringify(user));  // Store user object as JSON string
+            const tokenData = localStorage.getItem('authToken');
+            if (tokenData) {
+                const parsedToken = JSON.parse(tokenData);
+                if (parsedToken.expiresAt > Date.now()) {
+                    token.value = parsedToken.value; // Update reactive state
+                    return parsedToken.value;
+                } else {
+                    clearToken(); // Token expired
+                }
+            }
+        }
+        return null;
+    };
+
+    const setUser = (newUser: object): void => {
+        if (isClient) {
+            localStorage.setItem('user', JSON.stringify(newUser));
+            user.value = newUser; // Sync with reactive state
         }
     };
 
@@ -31,30 +65,10 @@ export const useAuthStore = defineStore('auth', () => {
         return user.value ?? null;
     };
 
-    const getToken = (): string | null => {
-        if (isClient) {
-            const tokenData = localStorage.getItem('authToken');
-            
-            if (!tokenData) {
-                return null;
-            }
-
-            const parsedToken = JSON.parse(tokenData);
-            if (parsedToken.expiresAt < Date.now()) {
-                clearToken();
-                return null;
-            }
-
-            return parsedToken.value;
-        }
-        return null; 
-    };
-
-   
     const clearToken = (): void => {
         if (isClient) {
             token.value = null;
-            localStorage.removeItem('authToken');  
+            localStorage.removeItem('authToken');
         }
     };
 
@@ -63,15 +77,18 @@ export const useAuthStore = defineStore('auth', () => {
         if (isClient) {
             user.value = null;
             clearToken();
-            localStorage.removeItem('user');  
+            localStorage.removeItem('user');
         }
     };
 
     return {
+        token,
+        user,
         setToken,
         setUser,
         getToken,
         getUser,
+        clearToken,
         clearAuthData,
     };
 });
