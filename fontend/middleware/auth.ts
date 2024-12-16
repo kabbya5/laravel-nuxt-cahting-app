@@ -1,18 +1,18 @@
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app';
 import { useAuthStore } from '~/stores/authStore';
 
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to, from) => {
   const authStore = useAuthStore();
-
   const token = authStore.getToken();
 
-  if (!token) {
-    if (process.client && window.location.pathname !== '/login') {
+  if (process.client) {
+    if (!token && to.path !== '/login') {
       return navigateTo('/login');
     }
-  } else {
-    if (process.client && window.location.pathname === '/login') {
+  
+    if (token && to.path === '/login') {
       return navigateTo('/');
     }
   }
 });
+

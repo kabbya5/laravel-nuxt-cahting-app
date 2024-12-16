@@ -15,14 +15,14 @@
     </div>
     <div>
         <h1>Notification Example</h1>
-        <button @click="showNotification">Show Notification</button>
+       
 
         <div v-for="notification in notificationStore.notifications" :key="notification.id">
-        <NotificationMessage
-            :message="notification.message"
-            :type="notification.type"
-            @dismiss="notificationStore.removeNotification(notification.id)"
-        />
+            <NotificationMessage
+                :message="notification.message"
+                :type="notification.type"
+                @dismiss="notificationStore.removeNotification(notification.id)"
+            />
         </div>
     </div>
   </template>
@@ -34,15 +34,13 @@ definePageMeta({
     middleware: 'auth',
 });
 
+useHead({
+    title:'Chating App',
+})
+
 const postsStore = usePostsStore();
 const notificationStore = useNotificationStore();
 const config = useRuntimeConfig();
-
-const showNotification = () => {
-    postsStore.fetchPosts(); 
-    useCustomFetch(`${config.public.baseURL}/notification`);  // Custom fetch for notifications
-    notificationStore.addNotification('This is a notification!', 'success');
-};
 
 const handleScroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
@@ -51,8 +49,6 @@ const handleScroll = () => {
         }
     }
 };
-
-
 
 onMounted(async () => {
     postsStore.fetchPosts();

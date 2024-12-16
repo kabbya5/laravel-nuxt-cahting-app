@@ -30,9 +30,23 @@
     <div class="post-footer pt-4">
         <div class="py-2 border-t-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
             <div class="flex justify-between align-items-center">
-                <span> You and 24 other like this </span>
 
-                <span> 24 Comments</span>
+                <div class="flex items-center" v-if="post.likes_count > 0">
+                    <span  class="flex items-center justify-center mr-1 w-6 h-6 rounded-full bg-blue-800">
+                        <FontAwesomeIcon  class="text-md text-white" :icon="['fas',  'thumbs-up']" />
+                    </span>
+                    
+                
+                    <span v-if="post.likes_count > 1">
+                        {{ post.isLiked ? userName + ' and ' + (post.likes_count - 1) + ' others' : post.likes_count }}
+                    </span>
+
+                    <span v-else-if="post.likes_count === 1">
+                        {{ post.isLiked ? userName : post.likes_count }}
+                    </span>
+                </div>
+
+                <span>{{  post.likes_count  }}</span>
 
                 <span> 2 Shers  </span>
             </div>
@@ -40,12 +54,20 @@
 
         <div class="py-2 border-t-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
             <div class="flex justify-around align-items-center">
-                <span> You and 24 other like this </span>
-
-                <span> 24 Comments</span>
-
-                <span> 2 Shers  </span>
+                <button @click="handelLike(post.id)" :class="post.isLiked ? 'text-blue-800 origin-center rotate-12]' : 'text-gray-500'"> <FontAwesomeIcon  class="text-xl" :icon="['fas', 'thumbs-up']" /> Like </button>
+                <span class="text-gray-500"> <FontAwesomeIcon class="text-xl" :icon="['fas',  'comment']" /> Comment </span>
+                <span class="text-gray-500"> <FontAwesomeIcon class="text-xl" :icon="['fas', 'share']" /> Share </span>
             </div>
+        </div>
+
+        <div class="comment mt-2">
+            <div class="user-info flex items-center">
+            <img class="h-10 w-10 rounded-full" :src="`https://via.placeholder.com/500x480.png/0000bb?text=${post.user.name}`" :alt="post.user.name">
+             <div class="pl-3">
+                <p class="text-black dark:text-white" :class="{ 'font-md text-sm': post.page, 'font-bold text-md': !post.page }"> {{ post.user.name }}</p>
+                <p class="font-semibold text-gray-600 text-sm"> CV upload kore Jache na </p>
+             </div>
+        </div>
         </div>
     </div>
 </div>
@@ -53,12 +75,24 @@
 
 <script setup lang="ts">
 import { usePostsStore } from '@/stores/posts';
-const postsStore = usePostsStore();
+import { useAuthStore } from '~/stores/authStore';
+
+const {getUser} = useAuthStore();
+
+const postsStore = usePostsStore(); 
 
 const isExpanded = ref(false);
 
 const toggleExpanded = () => {
     isExpanded.value = !isExpanded.value;
 }
+
+const handelLike = (postId:number) => {
+    postsStore.likePost(postId);
+}
+
+const userData = await getUser();
+const userName = userData.name;
+
 
 </script>

@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
+import { useNotificationStore } from '../stores/notifications';
 
 export const usePostsStore = defineStore('posts', {
   state: () => ({
     posts: [] as any[],
     loading: false,
     page: 1,
-    limit: 30,
+    limit: 20,
     hasMore: true,
   }),
   
@@ -17,7 +18,6 @@ export const usePostsStore = defineStore('posts', {
         try {
             const baseUrl = await getBaseUrl(); 
             const response = await useCustomFetch(`${baseUrl}/posts?page=${this.page}&limit=${this.limit}`);
-            console.log('response',response);
             const rawValue = response._rawValue;
            
             if (rawValue && rawValue.data && Array.isArray(rawValue.data)) {
@@ -39,6 +39,27 @@ export const usePostsStore = defineStore('posts', {
           this.loading = false;
         }
     },
+
+    async likePost(postId:number){
+      const notificationStore = useNotificationStore(); 
+      const baseUrl = getBaseUrl();
+      const post = this.posts.find(p => p.id === postId);
+      if(post){
+        try{
+          await useCustomFetch(`${baseUrl}/posts/${postId}/like`,{method:'POST'});
+          if(post.isLiked){
+            post.isLiked = false;
+            post.likes_count--
+          }else{
+            post.isLiked = true;
+            post.likes_count++;
+          }
+          
+        }catch(error){
+          notificationStore.addNotification('Failed to like/unlike the post','error');
+        }
+      }
+    }
   },
 
   

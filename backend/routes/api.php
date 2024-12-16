@@ -16,13 +16,14 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('/login', 'login');
 });
 
-Route::middleware(['custom.sanctum'])->group(function(){
+Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [AuthController::class,'logout']);
     Route::post('/add-friend/{friendId}', [FriendShipController::class, 'addFreind']);
 
     // POST
     Route::controller(PostController::class)->group(function(){
         Route::get('/posts', 'index');
+        Route::post('/posts/{post}/like', 'likePost');
     });
 });
 

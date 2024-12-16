@@ -6,8 +6,8 @@ interface Notification{
 }
 
 export const useNotificationStore = defineStore('notification',{
-    state:() =>({
-        notifications:[] as Notification[],
+     state: () => ({
+        notifications: [] as Notification[],
     }),
 
     actions:{

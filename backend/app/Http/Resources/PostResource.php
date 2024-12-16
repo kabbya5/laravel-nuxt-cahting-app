@@ -15,16 +15,22 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->loadCount('likes');
+        $user = auth()->user();
+        $alReadyLiked = $this->likes()->where('user_id', $user->id)->exists();
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'img_url' => $this->img_url,
             'video' => $this->video,
             'content' => $this->content,
+            'likes_count' =>  $this->likes_count,
+            'isLiked' =>  $alReadyLiked ? true :false,
             'type' => $this->type,
             'created_at'  => $this->created_at->diffForHumans(),
             'page' => new PageResource($this->page),
             'comments' => CommentResource::collection($this->comments),
-            'like' => LikeResource::collection($this->likes),
+
             'user' => new UserResource($this->user),
         ];
     }

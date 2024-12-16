@@ -18,8 +18,8 @@ class LikeFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::factory(),
-            'post_id' => \App\Models\Post::factory(),
-            'page_id' => null, // Can assign a page or leave null for post-only likes
+            'likeable_id'  => null,
+            'likeable_type' => null,
         ];
     }
 }

@@ -43,7 +43,7 @@ class AuthController extends Controller
 
     $request->validate([
         'email' => 'required|email',
-        'password' => 'required|string|min:6', // Ensure password is a string with at least 6 characters
+        'password' => 'required|string|min:6',
     ]);
 
     $credentials = $request->only('email', 'password');
@@ -60,7 +60,6 @@ class AuthController extends Controller
         }
     }
 
-    // Return an Unauthorized response if authentication fails
     return response()->json(['message' => 'Unauthorized'], 401);
 }
 

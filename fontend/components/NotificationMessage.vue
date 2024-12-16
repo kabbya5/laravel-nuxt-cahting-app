@@ -1,6 +1,6 @@
 <template>
     <div v-if="visible" class="notification" :class="type" @click="dismiss">
-      <p>{{ message }}</p>
+      <p class="font-xl leading-5 tracking-wide">{{ type + ' ' + message }}</p>
     </div>
 </template>
 
@@ -34,6 +34,7 @@
   padding: 15px;
   border-radius: 5px;
   transition: opacity 0.3s ease;
+  z-index: 100;
 }
 
 .notification.info {

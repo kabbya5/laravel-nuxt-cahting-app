@@ -57,12 +57,26 @@ export const useAuthStore = defineStore('auth', () => {
     const setUser = (newUser: object): void => {
         if (isClient) {
             localStorage.setItem('user', JSON.stringify(newUser));
-            user.value = newUser; // Sync with reactive state
+            user.value = newUser; 
         }
     };
 
-    const getUser = (): object | null => {
-        return user.value ?? null;
+    const getUser = async (): Promise<{ name: string | null, email: string | null }> => {
+        if (process.client) {
+            try {
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    const userData = JSON.parse(storedUser);
+                    return {
+                        name: userData.name ?? null,
+                        email: userData.email ?? null
+                    };
+                }
+            } catch (error) {
+                console.error("Error getting user data:", error);
+            }
+        }
+        return { name: null, email: null };
     };
 
     const clearToken = (): void => {
