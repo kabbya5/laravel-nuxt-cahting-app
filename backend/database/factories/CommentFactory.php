@@ -19,7 +19,10 @@ class CommentFactory extends Factory
         return [
             'post_id' => \App\Models\Post::factory(),
             'user_id' => \App\Models\User::factory(),
-            'content' => $this->faker->sentence,
+            'content' => $this->faker->sentence(10),
+            'image_url' => $this->faker->optional()->imageUrl(640, 480, 'comments'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

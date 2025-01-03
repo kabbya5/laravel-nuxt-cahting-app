@@ -35,6 +35,14 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-
-  modules: ['@pinia/nuxt'],
+  build: {
+    loaders: {
+      sass: {
+        implementation: require('sass'),
+      },
+      scss: {
+        implementation: require('sass'),
+      },
+    },
+  },
 })

@@ -9,3 +9,11 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('notification',function(){
     return true;
 });
+
+Broadcast::channel('post.like', function(){
+    return true;
+});
+
+Broadcast::channel('post.comment', function(){
+    return true;
+});

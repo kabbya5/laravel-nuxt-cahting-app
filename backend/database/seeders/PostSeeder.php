@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Post;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -19,6 +20,10 @@ class PostSeeder extends Seeder
             Like::factory($likes)->create([
                 'likeable_id' => $post->id,
                 'likeable_type' => Post::class,
+            ]);
+
+            Comment::factory()->count(rand(0, 60))->create([
+                'post_id' => $post->id,
             ]);
         });
     }

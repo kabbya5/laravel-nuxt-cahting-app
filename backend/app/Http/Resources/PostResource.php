@@ -18,6 +18,7 @@ class PostResource extends JsonResource
         $this->loadCount('likes');
         $user = auth()->user();
         $alReadyLiked = $this->likes()->where('user_id', $user->id)->exists();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -29,8 +30,8 @@ class PostResource extends JsonResource
             'type' => $this->type,
             'created_at'  => $this->created_at->diffForHumans(),
             'page' => new PageResource($this->page),
-            'comments' => CommentResource::collection($this->comments),
-
+            'comments_count'  => $this->comments->count(),
+            'comments'=> CommentResource::collection($this->comments),
             'user' => new UserResource($this->user),
         ];
     }

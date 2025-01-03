@@ -23,4 +23,16 @@ class Post extends Model
     {
         return $this->morphMany(Like::class, 'likeable');
     }
+
+    public function postComment(){
+        $auth_id = auth()->id();
+        if($auth_id){
+          $comment = $this->comments()->where('user_id',$auth_id)->first();
+          if($comment){
+            return $comment;
+          }
+        }
+
+        return $this->comments()->first();
+    }
 }

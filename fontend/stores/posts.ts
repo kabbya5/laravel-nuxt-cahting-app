@@ -22,9 +22,6 @@ export const usePostsStore = defineStore('posts', {
            
             if (rawValue && rawValue.data && Array.isArray(rawValue.data)) {
                 const data = rawValue.data;
-      
-                
-      
                 if (data.length < this.limit) {
                     this.hasMore = false;
                 }
@@ -45,18 +42,41 @@ export const usePostsStore = defineStore('posts', {
       const baseUrl = getBaseUrl();
       const post = this.posts.find(p => p.id === postId);
       if(post){
+        if(post.isLiked){
+          post.isLiked = false;
+          post.likes_count--
+        }else{
+          post.isLiked = true;
+          post.likes_count++;
+        }
         try{
           await useCustomFetch(`${baseUrl}/posts/${postId}/like`,{method:'POST'});
-          if(post.isLiked){
-            post.isLiked = false;
-            post.likes_count--
-          }else{
-            post.isLiked = true;
-            post.likes_count++;
-          }
-          
         }catch(error){
           notificationStore.addNotification('Failed to like/unlike the post','error');
+        }
+      }
+    },
+
+    async addComment(postId: number, formData: any) {
+      const post = this.posts.find(p => p.id === postId);
+      if(post) {
+        try {
+            const response = await useCustomFetch(`posts/${postId}/comments`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const comment = response.value.comment;
+
+            if(comment){
+              post.comments.unshift(comment);
+              post.comments_count++; 
+            }
+            
+
+        }catch (error) {
+            console.error('Failed to add comment:', error);
+            alert('Error submitting comment');
         }
       }
     }

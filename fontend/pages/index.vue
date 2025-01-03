@@ -2,21 +2,19 @@
 
     <div class="container mx-auto">
         <div class="w-2/3 xl:max-w-[800px] xl:mx-auto">
-            <Posts />
+            <PostsPost v-for="post in postsStore.posts" :post="post"/>
             <div v-if="postsStore.loading" class="loading">Loading...</div>
         </div>
-        <div class="w-1/3"> </div>
-        
-
-       
+        <div class="w-1/3"> </div> 
     </div>
+
     <div>
         <h1>Welcome to the Home Page</h1>
     </div>
+
     <div>
         <h1>Notification Example</h1>
        
-
         <div v-for="notification in notificationStore.notifications" :key="notification.id">
             <NotificationMessage
                 :message="notification.message"
@@ -54,6 +52,10 @@ onMounted(async () => {
     postsStore.fetchPosts();
     window.addEventListener('scroll', handleScroll); 
 
+    // $echo.channel('post.like')
+    // .listent('LikedEvent', (e) => {
+    //     post
+    // })
 });
 
 
