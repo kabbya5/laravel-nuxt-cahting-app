@@ -11,18 +11,21 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-brands-svg-icons": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@pinia/nuxt": "^0.9.0",
+    "@vesp/nuxt-fontawesome": "^1.1.0",
     "laravel-echo": "^1.17.1",
     "nuxt": "^3.13.2",
+    "nuxt-swiper": "^2.0.0",
     "pinia": "^2.3.0",
     "pusher-js": "^8.4.0-rc2",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "sass": "^1.80.6",

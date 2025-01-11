@@ -20,7 +20,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@pinia/nuxt'
+    '@pinia/nuxt', 
+    'nuxt-swiper', 
+    '@vesp/nuxt-fontawesome',
   ],
 
   plugins: [
@@ -28,6 +30,11 @@ export default defineNuxtConfig({
     '~/plugins/csrf.ts',
     '~/plugins/fontawesome.ts',
   ],
+  icons: {
+    solid: ['coffee', 'child', ],
+    regular: ['comment',],
+    brands: ['twitter',],
+  },
 
   postcss: {
     plugins: {
