@@ -2,12 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Friendship;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FriendShipController extends Controller
 {
+    public function getRequestedFriend(){
+        $user_id = auth()->id();
+
+        $friend_requests = DB::select("
+            SELECT
+                u.name,
+                u.profile_picture,
+                u.id
+            FROM users as u
+            JOIN friendships as f on f.user_id = u.id
+            WHERE f.user_id = {$user_id}
+            ORDER BY f.created_at DESC
+        ");
+
+        return response()->json(['friend_request'  => $friend_requests]);
+    }
+
+
+    public function getFindFriends(Request $request){
+        $limit = $request->input('limit', 30);
+
+        $find_friends = User::whereDoesntHave('friendshipsAsUser', function ($query) {
+            $query->where('friend_id', Auth::id());
+        })
+        ->whereDoesntHave('friendshipsAsFriend', function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->where('id', '!=', Auth::id()) // Exclude the logged-in user
+        ->paginate($limit);
+
+        return response()->json(['fiend_friends' => $find_friends->items()], 200);
+    }
+
+
     public function addFriend($friendId){
         $user = Auth::user();
 
@@ -30,5 +66,43 @@ class FriendShipController extends Controller
             VALUES(?, ?, ?)", [$user->id, $friendId, 'pending']);
 
         return response()->json(['message' => 'Friend request sent.'], 200);
+    }
+
+    public function getFriendStatus(User $friend){
+        $user_id = auth()->id();
+        $status = Friendship::where('user_id', $user_id)
+            ->where('friend_id', $friend->id)
+            ->orWhere('friend_id', $user_id)
+            ->where('user_id', $friend->id)
+            ->first();
+
+
+        if (!$status) {
+            return response()->json(['friend' => $friend, 'status' => 'not_friends']);
+        }
+
+        return response()->json(['friend' => $friend, 'status' => $status->status]);
+    }
+
+    public function requestSend($friend_id){
+        $user_id = auth()->id();
+
+        $status = Friendship::where('user_id', $user_id)
+            ->where('friend_id', $friend_id)
+            ->orWhere('friend_id', $user_id)
+            ->where('user_id', $friend_id)
+            ->first();
+
+        if ($status) {
+            return response()->json(['status' => $status->status], 200);
+        }
+
+        Friendship::create([
+            'friend_id' => $friend_id,
+            'user_id'   => $user_id,
+            'status'    => 'pending', // Ensure status is set explicitly
+        ]);
+
+        return response()->json(['status' => 'pending'], 200);
     }
 }

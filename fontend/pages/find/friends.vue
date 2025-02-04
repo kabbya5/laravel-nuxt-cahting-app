@@ -1,0 +1,105 @@
+<template>
+    <div class="px-4 py-4 container mx-auto">
+        <h2 class="text-gray-800 font-bold text-xl"> Friend Request </h2>
+        <div class="grid grid-cols-5 gap-4 mt-4">
+            <div class="border-2 border-gray-400 shadow-xl">
+                <img :src="'https://shorturl.at/r0Tcu'" alt="">
+                <NuxtLink :to="`/profile/${1}`">{{ 'friend.name' }}</NuxtLink>
+                <button class="text-center py-2 w-full text-white bg-blue-500"> Confirm </button>
+                <button class="text-center py-2 w-full text-white bg-red-500"> Delete </button>
+            </div>
+        </div>
+
+        <div class="mt-4" v-if="find_friends">
+            <h2 class="text-gray-800 font-bold text-xl"> Add Friend </h2>
+            <div class="grid grid-cols-5 gap-4 mt-4">
+                <div v-for="friend in find_friends" :key="friend.id" class="mb-4 border-2 border-gray-400 shadow-xl">
+                    <img :src="`https://via.placeholder.com/150/FF0000/FFFFFF?text=Image+${friend.id}`" :alt="friend.name ">
+                    <NuxtLink :to="`/profile/${friend.id}`">{{ friend.name }}</NuxtLink>
+                    <button @click="sendFriendRequest(friend.id)" class="text-center py-2 w-full text-white bg-cyan-500"> Add Friend  </button>
+                    <button class="text-center py-2 w-full text-white bg-red-500"> Delete </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>
+
+<script setup lang="ts">
+
+definePageMeta({
+    middleware: 'auth',
+});
+const friend_requests = ref<{id:number|null,name:string|null,image:null|string}>({
+    id:null,
+    name:null,
+    image:null,
+});
+
+const find_friends = ref<any[]>([]);
+const hasMore = ref<boolean>(true)
+
+const query = ref({
+    page: 1,
+    limit: 30,
+});
+
+const getFriendRequests = async () => {
+    const response = await useCustomFetch(`/friends/requests`);
+    if(response.value){
+        friend_requests.value = response.value.friend_requests;
+    }
+}
+
+const findFriends = async () => {
+    const { page, limit } = query.value;
+
+    if (hasMore.value) {
+        try {
+            const res = await useCustomFetch(`/friends/find?page=${page}&limit=${limit}`);
+            const data = res.value;
+            if (data) {
+                const friends = data.fiend_friends || [];
+                if (friends.length < limit) {
+                    hasMore.value = false;
+                }
+                find_friends.value.push(...friends);
+
+                query.value.page++;
+            }
+        } catch (error) {
+            console.error('Error fetching friends:', error);
+        }
+    }
+
+};
+
+const handelScroll = () => {
+    if (window.innerHeight + window.scrollY > document.body.scrollHeight) {
+        findFriends();
+    }
+}
+
+const sendFriendRequest = async (friend_id: number) => {
+    find_friends.value = find_friends.value.filter(f => f.id !== friend_id);
+    try {
+        const response = await useCustomFetch('/friends/requests/' + friend_id, {
+            method: 'POST'
+        });
+
+    } catch (error) {
+        console.error("Error sending friend request:", error);
+    }
+};
+
+onMounted(async () => {
+    getFriendRequests();
+    findFriends();
+    window.addEventListener('scroll', handelScroll); 
+});
+
+onBeforeMount(() => {
+    window.removeEventListener('scroll', handelScroll);
+});
+
+</script>

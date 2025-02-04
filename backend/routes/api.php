@@ -26,6 +26,15 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::post('/posts/{post}/like', 'likePost');
         Route::post('/posts/{post}/comments', 'commentPost');
     });
+
+    Route::controller(FriendShipController::class)->group(function() {
+        Route::prefix('friends')->group(function() {
+            Route::get('/requests', 'getRequestedFriend');
+            Route::get('/find', 'getFindFriends');
+            Route::get('/status/{friend}', 'getFriendStatus');
+            Route::post('/requests/{friend_id}', 'requestSend');
+        });
+    });
 });
 
 

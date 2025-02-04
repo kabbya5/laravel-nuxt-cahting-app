@@ -23,20 +23,20 @@
               <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','play']" size="2xl" />
             </NuxtLink>
 
-            <NuxtLink to="/" class="text-dark dark:text-white">
-              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','people-group']" size="2xl" />
+            <NuxtLink :to="{name:'find-friends'}" class="text-dark dark:text-white" active-class="active-link">
+              <FontAwesomeIcon class="text-gray-600 dark:text-white fa" :icon="['fas','people-group']" size="2xl" />
             </NuxtLink>
           </div>
 
           <div class="w-1/3 flex items-center justify-end">
             <NuxtLink to="/" class="text-dark dark:text-white">
-              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fab','facebook-messenger']" size="2xl" />
+              <FontAwesomeIcon class="text-gray-600 dark:text-white fa" :icon="['fab','facebook-messenger']" size="2xl" />
             </NuxtLink>
 
             <NuxtLink to="/" class="text-dark dark:text-white">
               <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','bell']" size="2xl" />
             </NuxtLink>
-
+            
             <button 
                 @click="darkModeStore.toggleDarkMode" 
                 class="dark-mode-toggle text-black dark:text-white"
@@ -116,4 +116,10 @@
   }
   
   </script>
+
+<style>
+.active-link .fa{
+  color: rgb(218, 122, 13);
+}
+</style>
   

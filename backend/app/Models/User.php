@@ -87,4 +87,15 @@ class User extends Authenticatable
     public function likes() {
         return $this->hasMany(Like::class);
     }
+
+    public function friendshipsAsUser()
+    {
+        return $this->hasMany(Friendship::class, 'user_id');
+    }
+
+    // Friendship where the user is the 'friend_id'
+    public function friendshipsAsFriend()
+    {
+        return $this->hasMany(Friendship::class, 'friend_id');
+    }
 }
