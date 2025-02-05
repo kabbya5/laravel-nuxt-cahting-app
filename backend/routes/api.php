@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
             Route::get('/find', 'getFindFriends');
             Route::get('/status/{friend}', 'getFriendStatus');
             Route::post('/requests/{friend_id}', 'requestSend');
+            Route::post('/confirm/{friend_id}', 'confirm_friend');
         });
     });
 });

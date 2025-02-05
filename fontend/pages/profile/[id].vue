@@ -79,15 +79,16 @@ const getFriendStatus = async () => {
 
 };
 
-const sendFriendRequest = () => {
+const sendFriendRequest = async () => {
     try {
         const friend_id = route.params.id;
-        const response =  useCustomFetch('/friends/requests/' + friend_id, {
+        const response =  await useCustomFetch('/friends/requests/' + friend_id, {
             method: 'POST'
         });
-
+        console.log(response.value);
         if (response.value.status) {
-            friendshipStatus.value =response.value.status;
+            
+            friendshipStatus.value = response.value.status;
         }
     } catch (error) {
         console.error("Error sending friend request:", error);

@@ -20,7 +20,8 @@ class FriendShipController extends Controller
                 u.id
             FROM users as u
             JOIN friendships as f on f.user_id = u.id
-            WHERE f.user_id = {$user_id}
+            WHERE f.friend_id = {$user_id}
+            AND f.status = 'pending'
             ORDER BY f.created_at DESC
         ");
 
@@ -104,5 +105,17 @@ class FriendShipController extends Controller
         ]);
 
         return response()->json(['status' => 'pending'], 200);
+    }
+
+
+    public function confirm_friend(Request $request,$friend_id){
+        $friend = Friendship::where('user_id', $friend_id)->where('friend_id', auth()->id())->first();
+        if(!$friend){
+            return response()->json(['error' => 'Friend not found'], 401);
+        }
+
+        $friend->update(['status' => 'accepted']);
+
+        return response()->json(['success' => 'The friend confirm'],200);
     }
 }
