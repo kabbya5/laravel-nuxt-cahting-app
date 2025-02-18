@@ -4,10 +4,10 @@
             <h2 class="text-gray-800 font-bold text-xl"> Friend Request </h2>
             <div class="grid grid-cols-5 gap-4 mt-4">
                 <div class="border-2 border-gray-400 shadow-xl" v-for="friend in friend_requests" :key="friend.id">
-                    <img :src="friend.profile_image" :alt="friend.name">
+                    <img :src="friend.profile_picture" :alt="friend.name">
                     <NuxtLink :to="`/profile/${friend.id}`">{{ friend.name }}</NuxtLink>
                     <button @click="confirmFriend(friend.id)" class="text-center py-2 w-full text-white bg-blue-500"> Confirm </button>
-                    <button class="text-center py-2 w-full text-white bg-red-500"> Delete </button>
+                    <button @click="deleteRequest(friend.id)" class="text-center py-2 w-full text-white bg-red-500"> Delete </button>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
             <h2 class="text-gray-800 font-bold text-xl"> Add Friend </h2>
             <div class="grid grid-cols-5 gap-4 mt-4">
                 <div v-for="friend in find_friends" :key="friend.id" class="mb-4 border-2 border-gray-400 shadow-xl">
-                    <img :src="`https://via.placeholder.com/150/FF0000/FFFFFF?text=Image+${friend.id}`" :alt="friend.name ">
+                    <img :src="friend.profile_picture" :alt="friend.name ">
                     <NuxtLink :to="`/profile/${friend.id}`">{{ friend.name }}</NuxtLink>
                     <button @click="sendFriendRequest(friend.id)" class="text-center py-2 w-full text-white bg-cyan-500"> Add Friend  </button>
                     <button class="text-center py-2 w-full text-white bg-red-500"> Delete </button>
@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '~/stores/authStore';
 
 definePageMeta({
     middleware: 'auth',
@@ -37,16 +38,20 @@ const friend_requests = ref<any[]>([]);
 
 const find_friends = ref<any[]>([]);
 const hasMore = ref<boolean>(true)
-
+const { $echo } = useNuxtApp();
 const query = ref({
     page: 1,
     limit: 30,
 });
 
+const {getUser}  = useAuthStore();
+const userId = computed(() => getUser()?.id || '');
+
 const getFriendRequests = async () => {
     const response = await useCustomFetch(`/friends/requests`);
     if(response.value){
         friend_requests.value = response.value.friend_request;
+        console.log(friend_requests.value);
     }
 }
 
@@ -85,6 +90,24 @@ const confirmFriend = async (friend_id: number)  =>{
     
 }
 
+const deleteRequest = async (friend_id: number) => {
+    try {
+        friend_requests.value = friend_requests.value.filter(f => f.id !== friend_id);
+
+        const response = await useCustomFetch(`/friends/requests/${friend_id}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete friend request");
+        }
+
+        console.log("Friend request deleted successfully");
+    } catch (error) {
+        console.error("Error deleting friend request:", error);
+    }
+};
+
 const handelScroll = () => {
     if (window.innerHeight + window.scrollY > document.body.scrollHeight) {
         findFriends();
@@ -107,6 +130,15 @@ onMounted(async () => {
     getFriendRequests();
     findFriends();
     window.addEventListener('scroll', handelScroll); 
+
+    if (userId.value) {
+        $echo.private(`friend_request-${userId.value}`)
+            .listen('FriendRequestEvent', (e:any) => {
+                friend_requests.value.push(e.sender);
+            });
+    } else {
+        console.log("User ID is not available.");
+    }
 });
 
 onBeforeMount(() => {

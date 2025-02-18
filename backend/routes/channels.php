@@ -17,3 +17,8 @@ Broadcast::channel('post.like', function(){
 Broadcast::channel('post.comment', function(){
     return true;
 });
+
+Broadcast::channel('friend_request-{friend_id}', function ($user, $friend_id) {
+    return (int) $user->id === (int) $friend_id;
+});
+

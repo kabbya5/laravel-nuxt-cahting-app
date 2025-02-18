@@ -8,7 +8,7 @@
             <div class="container mx-auto px-2 py-4">
                 <div class="flex justify-between items-end">
                     <div class="flex items-center">
-                        <img src="https://shorturl.at/TFk0q" alt="" class="w-24 h-24 rounded-full">
+                        <img id="fakeImage" src="https://picsum.photos/200/200" class="w-24 h-24 rounded-full">
                         <div class="flex flex-col ml-6">
                             <p class="text-2xl font-xl text-black"> {{ friend.name }} </p>
                             <p class="text-md font-md text-gray-600"> 1.6k friends * 41 mutual </p>
@@ -26,10 +26,10 @@
 
                     <div class="flex">
                         
-                        <button v-if="friendshipStatus == 'pending'" 
+                        <button v-if="friendshipStatus == 'pending'" @click="calcleFriendRequest"
                             class="flex items-center justify-center bg-orange-500 text-white px-4 py-2 rounded-md"> 
                             <font-awesome class="text-xl text-white mr-2" :icon="['fas','user']" /> 
-                            Friend Request
+                            Celcle Request
                         </button>
                         <button v-else-if="friendShipStatus == 'accepted'" 
                             class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-md"> 
@@ -39,7 +39,7 @@
                         <button v-else @click="sendFriendRequest"
                             class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-md"> 
                             <font-awesome class="text-xl text-white mr-2" :icon="['fas','user']" /> 
-                            Add Friend  
+                            Add Friend 
                         </button>
                         <button class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-md mx-4"> <font-awesome class="text-xl text-white mr-2" :icon="['fab','facebook-messenger']" /> Message{{ friendshipStatus.value }} </button>
                     </div>
@@ -54,10 +54,14 @@
 </template>
   
 <script setup>
-
+import { useAuthStore } from '~/stores/authStore';
 const friend = ref('');
 const friendshipStatus = ref('');
 const route = useRoute();
+
+const authStore = useAuthStore();
+const {getUser}  = useAuthStore();
+const userId = computed( () => getUser()?.id || '');
 
 const getFriendStatus = async () => {
   try {
@@ -85,7 +89,6 @@ const sendFriendRequest = async () => {
         const response =  await useCustomFetch('/friends/requests/' + friend_id, {
             method: 'POST'
         });
-        console.log(response.value);
         if (response.value.status) {
             
             friendshipStatus.value = response.value.status;
@@ -94,6 +97,24 @@ const sendFriendRequest = async () => {
         console.error("Error sending friend request:", error);
     }
 };
+
+const calcleFriendRequest = async () => {
+    try{
+        const friend_id = route.params.id;
+        const response = await useCustomFetch('/friends/request/cancle/' + friend_id,{
+            method: 'DELETE'
+        });
+
+        if(response.value){
+           
+            friendshipStatus.value = false;
+        }
+
+        console.log(friendshipStatus.value);
+    }catch(error){
+        alert('server error');
+    }
+}
 
 onMounted(() =>{
     getFriendStatus();

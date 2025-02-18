@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
-    const getUser = async (): Promise<{ name: string | null, email: string | null }> => {
+    const getUser = (): Promise<{ name: string | null, email: string | null, id:number|null }> => {
         if (process.client) {
             try {
                 const storedUser = localStorage.getItem('user');
@@ -69,14 +69,15 @@ export const useAuthStore = defineStore('auth', () => {
                     const userData = JSON.parse(storedUser);
                     return {
                         name: userData.name ?? null,
-                        email: userData.email ?? null
+                        email: userData.email ?? null,
+                        id:userData.id ?? null,
                     };
                 }
             } catch (error) {
                 console.error("Error getting user data:", error);
             }
         }
-        return { name: null, email: null };
+        return { name: null, email: null,id:null };
     };
 
     const clearToken = (): void => {

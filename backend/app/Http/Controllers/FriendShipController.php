@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FriendRequestEvent;
 use App\Models\Friendship;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\DB;
 
 class FriendShipController extends Controller
@@ -97,6 +99,9 @@ class FriendShipController extends Controller
         if ($status) {
             return response()->json(['status' => $status->status], 200);
         }
+        $sender = auth()->user()->only(['id', 'name', 'email','profile_picture']);
+
+        Broadcast(new FriendRequestEvent($friend_id, $sender));
 
         Friendship::create([
             'friend_id' => $friend_id,
@@ -107,7 +112,6 @@ class FriendShipController extends Controller
         return response()->json(['status' => 'pending'], 200);
     }
 
-
     public function confirm_friend(Request $request,$friend_id){
         $friend = Friendship::where('user_id', $friend_id)->where('friend_id', auth()->id())->first();
         if(!$friend){
@@ -117,5 +121,33 @@ class FriendShipController extends Controller
         $friend->update(['status' => 'accepted']);
 
         return response()->json(['success' => 'The friend confirm'],200);
+    }
+
+    public function cancleRequest($friend_id){
+        $friend = Friendship::where('user_id', auth()->id())
+        ->where('friend_id', $friend_id)
+        ->first();
+
+        if (!$friend) {
+            return response()->json(['status' => false], 200);
+        }
+
+        $friend->delete();
+
+        return response()->json(['status' => false], 200);
+    }
+
+    public function deleteRequest($friend_id){
+        $friend = Friendship::where('user_id',$friend_id)
+        ->where('friend_id', auth()->id())
+        ->first();
+
+        if (!$friend) {
+            return response()->json(['status' => false], 200);
+        }
+
+        $friend->update(['status' => 'declined']);
+
+        return response()->json(['status' => false], 200);
     }
 }

@@ -85,6 +85,7 @@ const handleLogin = async() =>{
                 setUser({
                     name:rawValue.user.name,
                     email:rawValue.user.email,
+                    id:rawValue.user.id,
                 });
             }
 

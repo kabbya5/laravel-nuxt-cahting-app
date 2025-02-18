@@ -22,7 +22,7 @@ class PostFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'page_id' => $this->faker->randomElement([Page::inRandomOrder()->first()->id, null]),
             'title' => $title,
-            'img_url' => $this->faker->imageUrl(),
+            'img_url' => 'https://picsum.photos/500/300',
             'video_url' => $this->faker->url,
             'type' => $this->faker->randomElement(['video', 'image', 'text']),
             'status' => $this->faker->randomElement(['only_me', 'published', 'friend']),
