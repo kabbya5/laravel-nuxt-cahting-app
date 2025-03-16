@@ -22,3 +22,7 @@ Broadcast::channel('friend_request-{friend_id}', function ($user, $friend_id) {
     return (int) $user->id === (int) $friend_id;
 });
 
+Broadcast::channel('message.receiver.{receiver_id}', function($user, $receiver_id) {
+    return (int) $user->id === (int) $receiver_id;
+});
+

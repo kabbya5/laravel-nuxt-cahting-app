@@ -2,10 +2,11 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\FriendShipController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Symfony\Component\Mime\MessageConverter;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -17,7 +18,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('/login', 'login');
 });
 
-Route::middleware(['auth:sanctum'])->group(function(){
+Route::middleware(['auth:sanctum','online.tracking'])->group(function(){
     Route::post('/logout', [AuthController::class,'logout']);
     Route::post('/add-friend/{friendId}', [FriendShipController::class, 'addFreind']);
 
@@ -37,6 +38,15 @@ Route::middleware(['auth:sanctum'])->group(function(){
             Route::post('/requests/{friend_id}', 'requestSend');
             Route::post('/confirm/{friend_id}', 'confirm_friend');
             Route::delete('/request/cancle/{frined_id}', 'cancleRequest');
+            Route::get('/online', 'onlineFriends');
+        });
+    });
+
+    Route::controller(MessageController::class)->group(function(){
+        Route::prefix('messages')->group(function(){
+            Route::get('/{receiver_id}', 'getMessage');
+            Route::post('/{receiver_id}', 'pushMessage');
+            Route::get('/old/list', 'messageLists');
         });
     });
 });

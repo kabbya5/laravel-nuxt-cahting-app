@@ -81,6 +81,4 @@ export const usePostsStore = defineStore('posts', {
       }
     }
   },
-
-  
 });

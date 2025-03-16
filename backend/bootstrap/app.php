@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CustomSanctumMiddleware;
+use App\Http\Middleware\UpdateuserOnlineStatus;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'custom.sanctum' => CustomSanctumMiddleware::class,
+            'online.tracking' => UpdateuserOnlineStatus::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

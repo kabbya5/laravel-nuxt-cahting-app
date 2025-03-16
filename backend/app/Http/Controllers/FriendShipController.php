@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class FriendShipController extends Controller
 {
@@ -99,6 +100,7 @@ class FriendShipController extends Controller
         if ($status) {
             return response()->json(['status' => $status->status], 200);
         }
+
         $sender = auth()->user()->only(['id', 'name', 'email','profile_picture']);
 
         Broadcast(new FriendRequestEvent($friend_id, $sender));
@@ -106,7 +108,7 @@ class FriendShipController extends Controller
         Friendship::create([
             'friend_id' => $friend_id,
             'user_id'   => $user_id,
-            'status'    => 'pending', // Ensure status is set explicitly
+            'status'    => 'pending',
         ]);
 
         return response()->json(['status' => 'pending'], 200);
@@ -149,5 +151,15 @@ class FriendShipController extends Controller
         $friend->update(['status' => 'declined']);
 
         return response()->json(['status' => false], 200);
+    }
+
+    public function onlineFriends(){
+        $user_id = auth()->id();
+        $fiveMinutesAgo = Carbon::now()->subMinutes(10);
+        $online_friends = User::where('is_online', '>=', $fiveMinutesAgo)
+                      ->where('id', '!=', $user_id)
+                      ->get();
+
+        return response()->json(['friends' =>$online_friends]);
     }
 }

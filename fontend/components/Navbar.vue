@@ -1,4 +1,5 @@
 <template>
+  <MessageList v-if="messageStore.showOldMessage" class="fixed top-14 right-2 border-2 border-gray-200 z-50"/>
     <div class="shadow-md dark:bg-black bg-white border-b border-2 broder-gray-400 dark:border-gray-700">
       <div class="container mx-auto px-2 py-3">
         <div class="flex justify-between items-center">
@@ -29,20 +30,23 @@
           </div>
 
           <div class="w-1/3 flex items-center justify-end">
-            <NuxtLink to="/" class="text-dark dark:text-white">
-              <FontAwesomeIcon class="text-gray-600 dark:text-white fa" :icon="['fab','facebook-messenger']" size="2xl" />
-            </NuxtLink>
+            <div class="flex items-center justify-between w-full lg:w-1/2">
+              <button class="text-dark relative dark:text-white" @click="toggleMessageList">
+                <FontAwesomeIcon class="text-gray-600 dark:text-white fa" :icon="['fab','facebook-messenger']" size="2xl"/>
+                <span class="absolute bg-red-500 text-white top-[-10px] right-[-10px] w-[20px] h-[20px] rounded-full flex items-center justify-center"> 4 </span>
+              </button>
 
-            <NuxtLink to="/" class="text-dark dark:text-white">
-              <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','bell']" size="2xl" />
-            </NuxtLink>
+              <NuxtLink to="/" class="text-dark dark:text-white">
+                <FontAwesomeIcon class="text-gray-600 dark:text-white" :icon="['fas','bell']" size="2xl" />
+              </NuxtLink>
             
-            <button 
-                @click="darkModeStore.toggleDarkMode" 
-                class="dark-mode-toggle text-black dark:text-white"
-              >
-              <FontAwesomeIcon :icon="darkModeStore.isDark ? 'sun' : 'moon'" size="2xl" />
-            </button>
+              <button 
+                  @click="darkModeStore.toggleDarkMode" 
+                  class="dark-mode-toggle text-black dark:text-white"
+                >
+                <FontAwesomeIcon :icon="darkModeStore.isDark ? 'sun' : 'moon'" size="2xl" />
+              </button>
+            </div>
           </div>
 
           
@@ -77,23 +81,32 @@
             />
       </div>
     </div>
-  </template>
+</template>
   
-  <script setup lang="ts">
+<script setup lang="ts">
   import { useDarkModeStore } from '@/stores/darkMode'; 
   import { useAuthStore } from '~/stores/authStore';
   import { useNotificationStore } from '#imports';
+  import { useOnlineFriendsStore } from '@/stores/onlineFriends';
+  import { useMessagesStore } from '@/stores/messageToggler';
 
   const notificationStore = useNotificationStore();
+  const messageStore = useMessagesStore();
   const apiUrl = getBaseUrl();
   const authStore = useAuthStore();
   const darkModeStore = useDarkModeStore();
   const {getUser}  = useAuthStore();
+  const onlineFriendsStore = useOnlineFriendsStore();
 
   const userName = computed(() => getUser()?.name || '');
 
   const clearAuthData = () => {
     authStore.clearAuthData(); 
+  };
+
+  const toggleMessageList = () =>{
+    // messageStore.getOldMessage();
+    messageStore.toggleMessageList()
   };
 
   const handelLogout = async() =>{
@@ -114,8 +127,7 @@
       notificationStore.addNotification('Logout Faild', 'error');
     }
   }
-  
-  </script>
+</script>
 
 <style>
 .active-link .fa{

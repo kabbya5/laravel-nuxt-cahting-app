@@ -25,7 +25,6 @@
                     </div>
 
                     <div class="flex">
-                        
                         <button v-if="friendshipStatus == 'pending'" @click="calcleFriendRequest"
                             class="flex items-center justify-center bg-orange-500 text-white px-4 py-2 rounded-md"> 
                             <font-awesome class="text-xl text-white mr-2" :icon="['fas','user']" /> 
@@ -74,13 +73,10 @@ const getFriendStatus = async () => {
     }else{
         friendshipStatus.value = 'not_friends';
     }
-
-    
-  } catch (error) {
-        console.error("Error fetching friend status:", error);
-        friendshipStatus.value = 'error';
+  }catch (error) {
+    console.error("Error fetching friend status:", error);
+    friendshipStatus.value = 'error';
   }
-
 };
 
 const sendFriendRequest = async () => {
