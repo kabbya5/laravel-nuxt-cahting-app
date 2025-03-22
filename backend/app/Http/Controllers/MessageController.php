@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\MessageSendEvent;
 use App\Models\Message;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,11 +44,13 @@ class MessageController extends Controller
 
         $sql = "
             SELECT
+                m1.created_at,
+                m1.is_read,
                 CASE
                     WHEN m1.message_type = 'text' THEN m1.content
                     ElSE m1.message_type
                 END AS message,
-                m1.created_at,
+
                 CASE
                     WHEN m1.sender_id = :user_id1 THEN u2.name
                     ELSE u1.name
@@ -83,4 +86,26 @@ class MessageController extends Controller
 
         return response()->json(['messages' => $message_lists]);
     }
+
+    public function markAsRead($receiver_id){
+        $user_id = auth()->id();
+
+        $message = Message::where('sender_id', $user_id)
+            ->where('receiver_id', $receiver_id)
+            ->update(['is_read' => Carbon::now()]);
+
+        // if ($message) {
+        //     $updatedMessage = Message::where('sender_id', $user_id)
+        //         ->where('receiver_id', $receiver_id)->latest()
+        //         ->first();
+        //     $readAt = Carbon::parse($updatedMessage->is_read)->diffForHumans();
+
+        //     return response()->json(['status' => 'success', 'read_at' => $readAt]);
+        // } else {
+        //     return response()->json(['status' => 'error', 'message' => 'No messages found to update.']);
+        // }
+
+        return response()->json(['status' => 'success']);
+    }
+
 }

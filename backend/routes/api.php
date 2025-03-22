@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum','online.tracking'])->group(function(){
             Route::get('/{receiver_id}', 'getMessage');
             Route::post('/{receiver_id}', 'pushMessage');
             Route::get('/old/list', 'messageLists');
+            Route::put('/{receiver_id}/mark-as-read', 'markAsRead');
         });
     });
 });

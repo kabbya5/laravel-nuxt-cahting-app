@@ -21,7 +21,7 @@
             <img :src="message.receiver_image" alt="User" class="w-12 h-12 rounded-full">
             <div class="flex-1">
                 <h3 class="font-semibold">{{ message.receiver_name }} {{ message.id }}</h3>
-                <p class="text-sm text-gray-500 truncate">{{ strLimit(message.message,35) }}</p>
+                <p class="text-sm text-gray-500 truncate" :class="message.is_read ? 'text-gray-500' : 'text-gray-600 font-bold'">{{ strLimit(message.message,35) }}</p>
             </div>
         </div>
     </div>

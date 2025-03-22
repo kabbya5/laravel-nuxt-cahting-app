@@ -33,7 +33,7 @@
             <div class="flex items-center justify-between w-full lg:w-1/2">
               <button class="text-dark relative dark:text-white" @click="toggleMessageList">
                 <FontAwesomeIcon class="text-gray-600 dark:text-white fa" :icon="['fab','facebook-messenger']" size="2xl"/>
-                <span class="absolute bg-red-500 text-white top-[-10px] right-[-10px] w-[20px] h-[20px] rounded-full flex items-center justify-center"> 4 </span>
+                <span class="absolute bg-red-500 text-white top-[-10px] right-[-10px] w-[20px] h-[20px] rounded-full flex items-center justify-center"> {{ unReadMessage  }} </span>
               </button>
 
               <NuxtLink to="/" class="text-dark dark:text-white">
@@ -99,6 +99,7 @@
   const onlineFriendsStore = useOnlineFriendsStore();
 
   const userName = computed(() => getUser()?.name || '');
+  const unReadMessage = computed(() => messageStore.unreadMessages);
 
   const clearAuthData = () => {
     authStore.clearAuthData(); 

@@ -11,6 +11,7 @@ export const useMessagesStore = defineStore('messages', {
     state: () => ({
         showOldMessage:false,
         oldMessageList:[] as any,
+        unreadMessages:  1,
         messages: [] as Array<{ receiverId: number; messages: Array<any> }>,
         togglerMessageBox: {} as Record<number, MessageBox>,
     }),
@@ -66,15 +67,46 @@ export const useMessagesStore = defineStore('messages', {
         },
 
         async getOldMessage(){
-            try {
-                const response = await useCustomFetch('/messages/old/list');
+            if (!this.oldMessageList.length) {
+                try {
+                    const response = await useCustomFetch('/messages/old/list');
+                    const data = response.value;
+                    if (data.messages) {
+                        this.oldMessageList = data.messages;
+                        this.unreadMessages = 0;
+    
+                        data.messages.forEach((element:any) => {
+                            if (element.is_read === 0) {
+                                this.unreadMessages += 1;
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.log(error);
+                } 
+            } 
+        },
+
+        async readMessage(receiverId:number){
+            try{
+                await useCustomFetch(`/messages/${receiverId}/mark-as-read`,{
+                    method:'PUT',
+                });
                 const data = response.value;
-                if (data.messages) {
-                    this.oldMessageList = data.messages;
+
+                if (data.status === 'success') {
+                    this.oldMessageList.map(message =>{
+                        if(message.id === receiverId){
+                            message.is_read = true
+                        }
+                    })
+                    this.unreadMessages -= 1;
+                }else{
+                    console.error('Failed to mark messages as read:', data.message);
                 }
             } catch (error) {
-                console.log(error);
-            }  
+                console.error('Error marking messages as read:', error);
+            }
         },
 
         toggleMessageList(){

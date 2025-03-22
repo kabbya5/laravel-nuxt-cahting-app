@@ -2,7 +2,7 @@
   <div class="fixed bottom-4 right-3 flex space-x-4"
      v-if="Object.keys(messageStore.togglerMessageBox).length > 0">
    
-   <div class="w-80 bg-gray-100 p-3 rounded-lg shadow-lg" 
+   <div class="w-96 bg-gray-100 p-3 rounded-lg shadow-lg" 
         v-for="[id, messageBox] in Object.entries(messageStore.togglerMessageBox)" 
         :key="id">
         
@@ -94,7 +94,7 @@ const handelScroll = (receiverId:number) =>{
     const {scrollTop, scrollHeight, clientHeight} = messageBox;
     const isNearBottom = scrollHeight - (scrollTop + clientHeight) <= 100;
     if(isNearBottom){
-      alert('scroll is near bottom');
+        messageStore.readMessage(receiverId);
     }
   }
 }
